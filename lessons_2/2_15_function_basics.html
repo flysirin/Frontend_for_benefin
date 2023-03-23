@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Function basics</title>
+</head>
+<body>
+<script>
+    // function checkAge(age) {
+    //     if (age > 18) {
+    //         return true;
+    //     } else {
+    //         return confirm('Родители разрешили?');
+    //     }
+    // }
+    // Перепишите функцию, чтобы она делала то же самое, но без if, в одну строку.
+    //
+    // Сделайте два варианта функции checkAge:
+    // Используя оператор ?
+    // Используя оператор ||
+    ////
+    // function checkAge(age) {
+    //     return (age > 18) ? true: confirm('Родители разрешили?');
+    // }
+    //
+    function checkAge(age) {
+        return age > 18 || confirm('Родители разрешили?');
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Напишите функцию min(a,b), которая возвращает меньшее из чисел a и b.
+    function min(a, b) {
+        return (a < b) ? a : b;
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Напишите функцию pow(x,n), которая возводит x в степень n и возвращает результат.
+    // Создайте страницу, которая запрашивает x и n, а затем выводит результат pow(x,n)
+    function pow(x, n) {
+        if (Number.isInteger(n) && n >= 1) {
+            return x ** n
+        }
+    }
+    let x = +prompt('Input x?', '')
+    let n = +prompt('Input Natural n > 1?', '')
+
+    if (n < 1 && Number.isInteger(n)){
+        alert(`I will not show you result with n = ${n}. Use Natural n > 1`)
+    } else {
+        alert(pow(x, n))
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+</script>
+</body>
+</html>
