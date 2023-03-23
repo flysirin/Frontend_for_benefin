@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Arrow functions basics</title>
+</head>
+<body>
+<script>
+    // Замените код Function Expression стрелочной функцией:
+    // function ask(question, yes, no) {
+    //     if (confirm(question)) yes()
+    //     else no();
+    // }
+    // ask(
+    //     "Вы согласны?",
+    //     function () {
+    //         alert("Вы согласились.");
+    //     },
+    //     function () {
+    //         alert("Вы отменили выполнение.");
+    //     }
+    // );
+    //
+    let ask = (question, yes, no) => {
+        (confirm(question)) ? yes() : no();
+    }
+    ask(
+        "Вы согласны?",
+        () => {
+            alert("Вы согласились.");
+        },
+        () => {
+            alert("Вы отменили выполнение.");
+        }
+    );
+
+    // v2.0
+    let newAsk = confirm("Вы согласны?") ? alert("Вы согласились.") : alert("Вы отменили выполнение.");
+    newAsk()
+
+    //
+
+</script>
+</body>
+</html>
