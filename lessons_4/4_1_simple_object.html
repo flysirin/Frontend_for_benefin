@@ -86,7 +86,7 @@
     let menu = {
         width: 200,
         height: 300,
-        title: "My menu"
+        title: "My menu",
     };
 
     multiplyNumeric(menu);
@@ -95,14 +95,14 @@
     // menu = {
     //     width: 400,
     //     height: 600,
-    //     title: "My menu"
+    //     title: "My menu",
     // };
     // Обратите внимание, что multiplyNumeric не нужно ничего возвращать. Следует напрямую изменять объект.
 
     //
     function multiplyNumeric(obj) {
-        for (let key in obj) {
-            if (["number", 'bigint'].includes(typeof obj[key])) {
+        for (let key in obj ) {
+            if (["number", "bigint"].includes(typeof obj[key])) {
                 obj[key] *= 2;
             }
         }
