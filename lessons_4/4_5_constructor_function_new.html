@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Constructor function new</title>
+</head>
+<body>
+<script>
+    // Если в нашем коде присутствует большое количество строк, создающих один сложный объект, то мы можем обернуть
+    // их в функцию-конструктор, которая будет немедленно вызвана, вот так:
+    // создаём функцию и сразу же вызываем её с помощью new
+    let user = new function () {
+        this.name = "John";
+        this.isAdmin = false;
+
+        // ...другой код для создания пользователя
+        // возможна любая сложная логика и инструкции
+        // локальные переменные и так далее
+    };
+
+    //
+
+    // Используя специальное свойство new.target внутри функции, мы можем проверить, вызвана ли функция
+    // при помощи оператора new или без него.
+    // В случае обычного вызова функции new.target будет undefined. Если же она была вызвана при помощи new,
+    // new.target будет равен самой функции.
+    // function User() {
+    //     alert(new.target);
+    // }
+    //
+    // // без "new":
+    // User(); // undefined
+    //
+    // // с "new":
+    // new User(); // function User { ... }
+    // Это можно использовать внутри функции, чтобы узнать, была ли она вызвана при помощи new,
+    // «в режиме конструктора», или без него, «в обычном режиме».
+
+    //
+
+    // Также мы можем сделать, чтобы вызовы с new и без него делали одно и то же:
+    // function User(name) {
+    //     if (!new.target) { // в случае, если вы вызвали меня без оператора new
+    //         return new User(name); // ...я добавлю new за вас
+    //     }
+    //
+    //     this.name = name;
+    // }
+    //
+    // let john = User("John"); // переадресовывает вызов на new User
+    // alert(john.name); // John
+
+    //
+
+    //     При вызове return с объектом, вместо this вернётся объект.
+    // При вызове return с примитивным значением, оно проигнорируется.
+    // Другими словами, return с объектом возвращает этот объект, во всех остальных случаях возвращается this.
+    //
+    // К примеру, здесь return замещает this, возвращая объект:
+    function BigUser() {
+        this.name = "John";
+        return {name: "Godzilla"};  // <-- возвращает этот объект
+    }
+
+    // alert(new BigUser().name);  // Godzilla, получили этот объект
+
+    // А вот пример с пустым return (или мы могли бы поставить примитив после return, неважно):
+    function SmallUser() {
+
+        this.name = "John";
+
+        return; // <-- возвращает this
+    }
+
+    // alert(new SmallUser().name);  // John
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Возможно ли создать функции A и B, чтобы new A() == new B()?
+    // function A() { ...
+    // }
+    //
+    // function B() { ...
+    // }
+    //
+    // let a = new A();
+    // let b = new B();
+    //
+    // alert(a == b); // true
+    // Если да – приведите пример вашего кода.
+
+    //
+    function A() {
+        return A
+    }
+
+    function B() {
+        return A
+    }
+
+    let a = new A();
+    let b = new B();
+
+    alert(a == b) // true !
+
+    // v.2
+    let obj_1 = {};
+
+    function A$() {
+        return obj_1;
+    }
+
+    function B$() {
+        return obj_1;
+    }
+
+    alert(new A$() == new B$()); // true
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Создайте функцию-конструктор Calculator, которая создаёт объекты с тремя методами:
+    // read() запрашивает два значения при помощи prompt и сохраняет их значение в свойствах объекта.
+    // sum() возвращает сумму этих свойств.
+    // mul() возвращает произведение этих свойств.
+
+    let calculator = new Calculator();
+    calculator.read();
+
+    alert("Sum=" + calculator.sum());
+    alert("Mul=" + calculator.mul());
+
+    //
+
+    function Calculator() {
+        return {
+            read() {
+                this.a = +prompt("Input digit a?", 0);
+                this.b = +prompt("Input digit b?", 0);
+            },
+            sum() {
+                return (this.a + this.b)
+            },
+            mul() {
+                return (this.a * this.b)
+            }
+        }
+    }
+
+
+    // v2.0
+    let calculator_2 = new Calc_2();
+    calculator_2.read();
+
+    alert("Sum=" + calculator_2.sum());
+    alert("Mul=" + calculator_2.mul());
+
+    function Calc_2() {
+        this.read = function () {
+            this.a = +prompt("Input digit a?", 0);
+            this.b = +prompt("Input digit b?", 0);
+        };
+        this.sum = function () {
+            return this.a + this.b
+        };
+        this.mul = function () {
+            return this.a * this.b
+        };
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Создайте функцию-конструктор Accumulator(startingValue).
+    // Объект, который она создаёт, должен уметь следующее:
+    //
+    // Хранить «текущее значение» в свойстве value. Начальное значение устанавливается в аргументе конструктора startingValue.
+    // Метод read() должен использовать prompt для считывания нового числа и прибавления его к value.
+    // Другими словами, свойство value представляет собой сумму всех введённых пользователем значений, с учётом начального значения startingValue.
+
+    let accumulator = new Accumulator(1); // начальное значение 1
+
+    accumulator.read(); // прибавляет введённое пользователем значение к текущему значению
+    accumulator.read(); // прибавляет введённое пользователем значение к текущему значению
+
+    alert(accumulator.value); // выведет сумму этих значений
+
+    //
+
+    function Accumulator(startingValue) {
+        this.value = startingValue;
+        this.read = function () {
+            this.value += +prompt("How many to add?", 0);
+        };
+    }
+
+</script>
+</body>
+</html>
