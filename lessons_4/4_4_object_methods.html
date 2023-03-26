@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Object methods</title>
+</head>
+<body>
+<script>
+    // "use strict"
+    // Здесь функция makeUser возвращает объект.
+    // Каким будет результат при обращении к свойству объекта ref? Почему?
+    function makeUser() {
+        return {
+            name: "John",
+            ref: this
+        };
+    }
+
+    let user = makeUser();
+    // Каким будет результат?
+
+    // alert(user); // { name: 'John',ref: <ref *1> Object [global] { global: [Circular *1], ....  }
+    // ссылка на объект с указанием, что вызов вызов цикличен
+    // alert(user.ref); //
+    // alert(user.ref.name); // нет такого свойства
+    //....
+
+    // Здесь значение this внутри makeUser() равно undefined, потому что оно вызывается как функция,
+    // а не через «точечный» синтаксис как метод.
+    // Значение this одно для всей функции, блоки кода и объектные литералы на него не влияют.
+    // Таким образом, ref: this фактически принимает текущее this функции makeUser().
+
+    // function makeUser() {
+    //     return {
+    //         name: "John",
+    //         ref() {
+    //             return this;
+    //         }
+    //     };
+    // }
+    // let user = makeUser();
+    // alert(user.ref().name); // John
+    // Теперь это работает, поскольку user.ref() – это метод. И значением this становится объект перед точкой ..
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    //     Создайте объект calculator (калькулятор) с тремя методами:
+    //
+    // read() (читать) запрашивает два значения и сохраняет их как свойства объекта.
+    // sum() (суммировать) возвращает сумму сохранённых значений.
+    // mul() (умножить) перемножает сохранённые значения и возвращает результат.
+    // let calculator = {
+    //     // ... ваш код ...
+    // };
+    //
+    // calculator.read();
+    // alert(calculator.sum());
+    // alert(calculator.mul());
+
+    //
+    let calculator = {
+        a: 0,
+        b: 0,
+        read() {
+            this.a = +prompt('Input digit a?', 0);
+            this.b = +prompt('Input digit b?', 0);
+        },
+        sum() {
+            return this.a + this.b
+        },
+        mul() {
+            return this.a * this.b
+        },
+    }
+
+    // calculator.read();
+    // alert(calculator.sum());
+    // alert(calculator.mul());
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // У нас есть объект ladder (лестница), который позволяет подниматься и спускаться:
+    // let ladder = {
+    //     step: 0,
+    //     up() {
+    //         this.step++;
+    //     },
+    //     down() {
+    //         this.step--;
+    //     },
+    //     showStep: function () { // показывает текущую ступеньку
+    //         alert(this.step);
+    //     }
+    // };
+    // // Теперь, если нам нужно выполнить несколько последовательных вызовов, мы можем сделать это так:
+    //
+    // ladder.up();
+    // ladder.up();
+    // ladder.down();
+    // ladder.showStep(); // 1
+    // ladder.down();
+    // ladder.showStep(); // 0
+    // Измените код методов up, down и showStep таким образом, чтобы их вызов можно было сделать по цепочке, например так:
+
+    // ladder.up().up().down().showStep().down().showStep(); // показывает 1 затем 0
+
+    //
+    // Easy
+    let ladder = {
+        step: 0,
+        up() {
+            this.step++;
+            return this
+        },
+        down() {
+            this.step--;
+            return this
+        },
+        showStep: function () { // показывает текущую ступеньку
+            alert(this.step);
+            return this
+        }
+    };
+
+    ladder.up().up().down().showStep().down().showStep(); // показывает 1 затем 0
+
+
+</script>
+</body>
+</html>
