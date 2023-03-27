@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Object to primitive</title>
+  <style>
+      body {
+          font-family: Arial, sans-serif;
+          background-color: #f8f8f8;
+      }
+
+      h1 {
+          font-size: 24px;
+          color: #333;
+          text-align: center;
+      }
+
+      p {
+          font-size: 16px;
+          color: #666;
+          line-height: 1.5;
+      }
+      ul {
+          font-size: 16px;
+          color: #666;
+          line-height: 1.5;
+      }
+      code {
+          font-family: Consolas, monospace;
+          font-size: 14px;
+          color: #666;
+          background-color: #f4f4f4;
+          padding: 2px 4px;
+          border-radius: 4px;
+      }
+
+      pre {
+          font-family: Consolas, monospace;
+          font-size: 14px;
+          color: #666;
+          background-color: #f4f4f4;
+          padding: 10px;
+          border-radius: 4px;
+          white-space: pre-wrap;
+      }
+
+      .code-block {
+          margin: 20px 0;
+          overflow-x: auto;
+      }
+  </style>
+</head>
+<body>
+<h1>Object to primitive</h1>
+<p>Встроенный символ с именем <code>Symbol.toPrimitive</code>, который следует использовать для обозначения метода
+  преобразования, вот так:</p>
+<div class="code-block">
+    <pre><code>obj[Symbol.toPrimitive] = function(hint) {
+  // вот код для преобразования этого объекта в примитив
+  // он должен вернуть примитивное значение
+  // hint = чему-то из "string", "number", "default"
+};</code></pre>
+</div>
+<p>Если метод <code>Symbol.toPrimitive</code> существует, он используется для всех хинтов, и больше никаких методов не
+  требуется.</p>
+<div class="code-block">
+    <pre><code>let user = {
+  name: "John",
+  money: 1000,
+Symbol.toPrimitive {
+alert(hint: ${hint});
+return hint == "string" ? {name: "${this.name}"} : this.money;
+}
+};
+
+// демонстрация результатов преобразований:
+alert(user); // hint: string -> {name: "John"}
+alert(+user); // hint: number -> 1000
+alert(user + 500); // hint: default -> 1500</code></pre>
+
+</div>
+<p>Единый метод <code>user[Symbol.toPrimitive]</code> обрабатывает все случаи преобразования.</p>
+<p>Если нет <code>Symbol.toPrimitive</code>, тогда JavaScript пытается найти методы <code>toString</code> и <code>valueOf</code>:
+</p>
+<ul>
+  <li>Для хинта "string": вызвать метод <code>toString</code>, а если он не существует или возвращает объект вместо
+    примитивного значения, то <code>valueOf</code> (таким образом, <code>toString</code> имеет приоритет при строковом преобразовании).
+  </li>
+  <li>
+    Для других хинтов: вызвать метод <code>valueOf</code>, а если он не существует или возвращает объект вместо примитивного значения,
+    то <code>toString</code> (таким образом, <code>valueOf</code> имеет приоритет для математических операций).
+  </li>
+</ul>
+
+<p>По умолчанию обычный объект имеет следующие методы <code>toString</code> и <code>valueOf</code>:</p>
+<p>Метод toString возвращает строку <code>"[object Object]"</code>.</p>
+<p>Метод valueOf возвращает сам объект.</p>
+
+<div class="code-block">
+  <pre><code>
+let user = {name: "John"};
+
+alert(user); // [object Object]
+alert(user.valueOf() === user); // tru
+  </code></pre>
+</div>
+
+<p>Используем их в реализации всё того же объекта user.
+  Но уже используя комбинацию <code>toString и valueOf вместо Symbol.toPrimitive</code>:</p>
+<div class="code-block">
+  <pre><code>
+let user = {
+  name: "John",
+  money: 1000,
+
+  // для хинта равного "string"
+  toString() {
+    return `{name: "${this.name}"}`;
+  },
+
+  // для хинта равного "number" или "default"
+  valueOf() {
+    return this.money;
+  }
+
+};
+
+alert(user); // toString -> {name: "John"}
+alert(+user); // valueOf -> 1000
+alert(user + 500); // valueOf -> 1500
+// Получилось то же поведение, что и в предыдущем примере с Symbol.toPrimitive.
+      </code></pre>
+</div>
+
+<p>Если мы передаём объект в качестве аргумента, то в вычислениях будут две стадии:</p>
+
+<p>Объект преобразуется в примитив (с использованием правил, описанных выше).
+Если необходимо для дальнейших вычислений, этот примитив преобразуется дальше.</p>
+<div class="code-block">
+  <pre><code>
+let obj = {
+  // toString обрабатывает все преобразования в случае отсутствия других методов
+  toString() {
+    return "2";
+  }
+};
+
+alert(obj * 2); // 4, объект был преобразован к примитиву "2", затем умножение сделало его числом
+      </code></pre>
+</div>
+
+<p>Бинарный плюс в подобной ситуации соединил бы строки:</p>
+<div class="code-block">
+  <pre><code>
+let obj = {
+  toString() {
+    return "2";
+  }
+};
+
+alert(obj + 2); // 22 ("2" + 2), преобразование к примитиву вернуло строку => конкатенация
+      </code></pre>
+</div>
+
+<p>Существует всего 3 типа (хинта) для этого:</p>
+<ul>
+  <li>"string" (для alert и других операций, которым нужна строка)</li>
+  <li>"number" (для математических операций)</li>
+  <li>"default" (для некоторых других операторов, обычно объекты реализуют его как "number")</li>
+</ul>
+
+
+<p>Алгоритм преобразования таков:</p>
+<ul>
+  <li>Сначала вызывается метод <code>obj[Symbol.toPrimitive](hint)</code>, если он существует,</li>
+  <li>В случае, если хинт равен "string"
+происходит попытка вызвать <code>obj.toString() и obj.valueOf()</code>, смотря что есть.</li>
+  <li>В случае, если хинт равен "number" или "default"
+    происходит попытка вызвать <code>obj.valueOf() и obj.toString()</code>, смотря что есть.</li>
+</ul>
+
+<p>Все эти методы должны возвращать примитив (если определены).</p>
+
+<p>На практике часто бывает достаточно реализовать только obj.toString() в качестве универсального метода
+  для преобразований к строке, который должен возвращать удобочитаемое представление объекта для целей логирования или отладки.</p>
+</body>
+</html>
