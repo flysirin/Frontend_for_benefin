@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>String</title>
+</head>
+<body>
+<script>
+    //  Есть три типа кавычек. Строки, использующие обратные кавычки, могут занимать более одной строки в коде
+    //  и включать выражения ${…}.
+    //
+    // Строки в JavaScript кодируются в UTF-16.
+    //
+    // Есть специальные символы, такие как разрыв строки \n.
+    //
+    // Для получения символа используйте [] или метод at.
+    //
+    // Для получения подстроки используйте slice или substring.
+    //
+    // Для того, чтобы перевести строку в нижний или верхний регистр, используйте toLowerCase/toUpperCase.
+    //
+    // Для поиска подстроки используйте indexOf или includes/startsWith/endsWith, когда надо только проверить, есть ли вхождение.
+    //
+    // Чтобы сравнить строки с учётом правил языка, используйте localeCompare.
+    //
+
+    // str.trim() — убирает пробелы в начале и конце строки.
+
+    // str.repeat(n) — повторяет строку n раз.
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    // Напишите функцию ucFirst(str), возвращающую строку str с заглавным первым символом. Например:
+    // ucFirst("вася") == "Вася";
+
+    //
+    function ucFirst(str) {
+        return (str) ? str[0].toUpperCase() + str.slice(1) : str
+    }
+
+    let str = "hello";
+    // alert(ucFirst(str));
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    //     Напишите функцию checkSpam(str), возвращающую true, если str содержит 'viagra' или 'XXX', а иначе false.
+    // Функция должна быть нечувствительна к регистру:
+    // checkSpam('buy ViAgRA now') == true
+    // checkSpam('free xxxxx') == true
+    // checkSpam("innocent rabbit") == false
+
+    //
+    function checkSpam(str) {
+        return (str) ? str.toLowerCase().includes("viagra") || str.toLowerCase().includes("xxx") : false
+    }
+
+    // v2.0
+    let spamArray = ["viagra", "xxx"];
+
+    function checkSpams(str, array) {
+        if (!str) {
+            return false
+        }
+        for (let key of array) {
+            if (str.toLowerCase().includes(key)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    // console.log(checkSpams('buy ViAgRA now', spamArray))
+    // console.log(checkSpams('free xxxxx', spamArray))
+    // console.log(checkSpams("innocent rabbit", spamArray))
+    // console.log(checkSpams("", spamArray))
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    // Создайте функцию truncate(str, maxlength), которая проверяет длину строки str и, если она превосходит maxlength,
+    // заменяет конец str на "…", так, чтобы её длина стала равна maxlength.
+    // Результатом функции должна быть та же строка, если усечение не требуется, либо, если необходимо, усечённая строка.
+    // truncate("Вот, что мне хотелось бы сказать на эту тему:", 20) = "Вот, что мне хотело…"
+    // truncate("Всем привет!", 20) = "Всем привет!"
+
+    //
+    function truncate(str, maxlength) {
+        return (maxlength < str.length) ? str.slice(0, maxlength - 3) + "..." : str
+    };
+
+    let str1 = "Вот, что мне хотелось бы сказать на эту тему:";
+    let str2 = "Всем привет!";
+
+    // alert(truncate(str1, 20));
+    // alert(truncate(str2, 20));
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    // Есть стоимость в виде строки "$120". То есть сначала идёт знак валюты, а затем – число.
+    // Создайте функцию extractCurrencyValue(str), которая будет из такой строки выделять числовое значение и возвращать его.
+    // alert(extractCurrencyValue('$120') === 120); // true
+
+    function extractCurrencyValue(str) {
+        return Number(str.slice(1));
+    }
+
+    strValue = "$123";
+    // alert(extractCurrencyValue(strValue));
+
+</script>
+</body>
+</html>
