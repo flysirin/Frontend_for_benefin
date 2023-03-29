@@ -103,37 +103,17 @@
     // getMaxSubSum([-1, -2, -3]) = 0
     // Попробуйте придумать быстрое решение: O(n2), а лучше за О(n) операций.
 
-    // v1.0
-    function getSubSum(arr) {
-        let sum_arr = [0];
-        let i = 0;
-        for (let value of arr) {
-            if (value < 0) {
-                sum_arr[++i] = 0;
-                continue;
-            } else {
-                sum_arr[i] += value
-            }
-        }
-        return Math.max(...sum_arr) // the spread operator "..."
-    }
-
     // v2.0
     function getSubSum_2(arr) {
-        max_sum = 0;
-        current_sum = 0;
+        let max_sum = 0;
+        let current_sum = 0;
         for (let value of arr) {
-            if (value > 0) {
-                current_sum += value;
-            } else {
-                max_sum = (max_sum > current_sum) ? max_sum : current_sum;
-                current_sum = 0;
-                continue;
-            }
+            current_sum = (current_sum + value > 0) ? current_sum + value : 0;
+            max_sum = (max_sum > current_sum) ? max_sum : current_sum;
         }
-        max_sum = (max_sum > current_sum) ? max_sum : current_sum;
         return max_sum
     }
+
 
     // test
     let digit_arrays = [
@@ -144,7 +124,9 @@
         [-2, -1, 1, 2],
         [100, -9, 2, -3, 5],
         [1, 2, 3],
-        [-1, -2, -3]];
+        [-1, -2, -3],
+        [1, 1, 1, -1, 1, 1, 1],
+    ];
 
     for (let arr of digit_arrays) {
         console.log(getSubSum_2(arr))
