@@ -62,19 +62,19 @@ function camelize(str) {
 }
 
 
-// function camelize3(str) {
-//     const words = str.split('-');
-//     if (words.length <= 1) {
-//         return words.join('');
-//     }
-//     const upperFirst = function (w) {
-//         if (!w) {
-//             return '';
-//         }
-//         return w[0].toUpperCase() + w.slice(1);
-//     };
-//     return [words[0], ... (words.slice(1).map(upperFirst))].filter(w => w !== '').join('');
-// }
+function camelize3(str) {
+    const words = str.split('-');
+    if (words.length <= 1) {
+        return words.join('');
+    }
+    const upperFirst = function (w) {
+        if (!w) {
+            return '';
+        }
+        return w[0].toUpperCase() + w.slice(1);
+    };
+    return [words[0], ... (words.slice(1).map(upperFirst))].filter(w => w !== '').join('');
+}
 
 // tests
 // console.log(camelize("-------list-sty------------le-ima--ge---------Dilemma------"));
@@ -117,8 +117,7 @@ function filterRangeInPlace(arr, a, b) {
         if (arr[i] < a || arr[i] > b) {
             arr.splice(i, 1);
             --max_index;
-        }
-        ++i;
+        } else ++i;
     }
 }
 
