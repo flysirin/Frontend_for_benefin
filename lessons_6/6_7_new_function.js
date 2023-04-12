@@ -21,3 +21,43 @@
 // а не на родительское. Поэтому они не могут использовать внешние локальные переменные. Но это очень хорошо,
 // потому что страхует нас от ошибок. Переданные явно параметры – гораздо лучшее архитектурное решение,
 // которое не вызывает проблем у минификаторов.
+
+//----------------------------------------------------------------------------------------------------------------------
+
+// Задача: написать функции для JSON.parse и JSON.stringify, которые позволят клонировать объект
+// вместе с его методами. Начните с простых методов без аргументов.
+
+let obj = {
+    name: "John",
+    surname: "Smith",
+    fullName() {
+        return this.name + ' ' + this.surname;
+    },
+};
+
+
+// from book
+function stringify(key, value) {
+if (typeof value === 'function') {
+let str = value.toString();
+let start = str.indexOf('{');
+let end = str.lastIndexOf('}');
+let body = str.split('').filter( (letter, index) => index > start && index < end ).join('').trim();
+
+let startArg = str.indexOf('(');
+let endArg = str.indexOf(')');
+let args = str.split('').filter( (letter, index) => index > startArg && index < endArg ).join('').split(',');
+return {body: body, arg: args};
+}
+return value;
+}
+
+function parse(key, value) {
+if (value.body) return new Function(...value.arg, value.body);
+return value;
+}
+
+let json = JSON.stringify(obj, stringify);
+let clone = JSON.parse(json, parse);
+
+console.log(clone.fullName()); // John Smith
