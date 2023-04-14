@@ -328,29 +328,78 @@ f1000(3); // (ограничение, 1000 мс ещё нет)
 // P.S. Аргументы и контекст this, переданные в f1000, должны быть переданы в оригинальную f.
 
 
-function throttle(func, time) {
-    let isReady = true;
-    let start_time = Date.now();
+// v 0.5 ...
+// function throttle(func, time) {
+//     let isReady = true;
+//     let start_time = Date.now();
+//
+//     function wrapper(...arguments) {
+//         const last_args = arguments;
+//         if (isReady) {
+//             func.apply(this, last_args);
+//             isReady = false;
+//             setTimeout(() => isReady = true, time);
+//             let timerID = setTimeout(() => true, 1);
+//         } else {
+//             clearTimeout(timerID);
+//             let timerID = setTimeout(() => func.apply(this, last_args), time);
+//         }
+//     }
+//
+//     return wrapper
+// }
 
-    function wrapper(...arguments) {
-        const last_args = arguments;
-        if (isReady) {
-            func.apply(this, last_args);
-            isReady = false;
-            setTimeout(() => isReady = true, time);
-            let timerID = setTimeout(() => true, 1);
-        } else {
-            clearTimeout(timerID);
-            let timerID = setTimeout(() => func.apply(this, last_args), time);
-        }
+
+
+// form book lesson
+function throttle(func, ms) {
+
+  let isThrottled = false,
+    savedArgs,
+    savedThis;
+
+  function wrapper() {
+
+    if (isThrottled) { // (2)
+      savedArgs = arguments;
+      savedThis = this;
+      return;
     }
 
-    return wrapper
+    func.apply(this, arguments); // (1)
+
+    isThrottled = true;
+
+    setTimeout(function() {
+      isThrottled = false; // (3)
+      if (savedArgs) {
+        wrapper.apply(savedThis, savedArgs);
+        savedArgs = savedThis = null;
+      }
+    }, ms);
+  }
+  return wrapper;
 }
 
+// Вызов throttle(func, ms) возвращает wrapper.
+// Во время первого вызова обёртка просто вызывает func и устанавливает состояние задержки (isThrottled = true).
+// В этом состоянии все вызовы запоминаются в saveArgs / saveThis. Обратите внимание, что контекст и аргументы
+// одинаково важны и должны быть запомнены. Они нам нужны для того, чтобы воспроизвести вызов позднее.
+// … Затем по прошествии ms миллисекунд срабатывает setTimeout. Состояние задержки сбрасывается (isThrottled = false).
+// И если мы проигнорировали вызовы, то «обёртка» выполняется с последними запомненными аргументами и контекстом.
+// На третьем шаге выполняется не func, а wrapper, потому что нам нужно не только выполнить func,
+// но и ещё раз установить состояние задержки и таймаут для его сброса.
 
+//
 
-
+// Ключевое слово arguments в JavaScript представляет собой массив-подобный объект, который содержит все аргументы,
+// переданные функции во время ее вызова. Он предоставляется автоматически каждой функции в JavaScript и не
+// требует явного объявления.
+// В данном коде, arguments используется в строке (1) для передачи всех аргументов из wrapper()
+// в оригинальную функцию func(), на которую применяется задержка. Также, в строке (2) переменные
+// savedArgs и savedThis используются для сохранения аргументов и контекста this,
+// если функция wrapper() была вызвана в период задержки. В строке (3), если savedArgs были сохранены,
+// то wrapper() вызывается повторно с сохраненными аргументами и контекстом this.
 
 
 
